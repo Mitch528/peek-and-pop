@@ -6,7 +6,10 @@ export type PeekableViewProps = ViewProps & {
   onPeek?: () => void;
   onPop?: () => void;
   onDisappear?: () => void;
+  onPressPreview?: () => void;
   children: React.ReactNode;
+  width: number;
+  height: number;
 };
 
 export type PreviewAction =

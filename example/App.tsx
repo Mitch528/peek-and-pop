@@ -15,6 +15,8 @@ class App extends React.Component {
           onPeek={() => console.log('onPeek')}
           onPop={() => console.warn('pop')}
           onDisappear={() => console.log('onDisappear')}
+          width={100}
+          height={100}
           previewActions={[
             {
               type: 'destructive',

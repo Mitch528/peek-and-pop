@@ -2,8 +2,8 @@ import * as React from 'react';
 import {
   requireNativeComponent,
   View,
+  Platform,
   findNodeHandle,
-  Dimensions,
   ViewStyle,
   StyleProp,
 } from 'react-native';
@@ -17,14 +17,13 @@ import {
   PeekableViewProps,
 } from './types';
 
-const { width, height } = Dimensions.get('window');
-
 export const NativePeekAndPopView: React.ComponentType<{
   ref: React.RefObject<NativePeekAndPopViewRef>;
   style: StyleProp<ViewStyle>;
   onPeek?: () => void;
   onPop?: () => void;
   onDisappear?: () => void;
+  onPressPreview?: () => void;
   onAction: (event: ActionEvent) => void;
   previewActions: TraveresedAction[];
   children: React.ReactNode;
@@ -64,7 +63,7 @@ type State = {
 export default class PeekableView extends React.Component<
   PeekableViewProps,
   State
-> {
+  > {
   static getDerivedStateFromProps(props: PeekableViewProps) {
     const mappedActions: MappedAction[] = [];
     const traversedActions = props.previewActions
@@ -122,27 +121,33 @@ export default class PeekableView extends React.Component<
       onDisappear,
       /* eslint-enable @typescript-eslint/no-unused-vars */
       onPop,
+      onPressPreview,
       children,
+      width,
+      height,
       ...rest
     } = this.props;
 
     return (
       <React.Fragment>
         <View {...rest} ref={this.sourceView}>
-          <NativePeekAndPopView
-            // Renders nothing and inside view bound to the screen used by controller
-            style={{ width: 0, height: 0 }}
-            onDisappear={this.onDisappear}
-            onPeek={this.onPeek}
-            onPop={onPop}
-            ref={this.preview}
-            previewActions={this.state.traversedActions}
-            onAction={this.onActionsEvent}
-          >
-            <View style={{ width, height }}>
-              {this.state.visible ? renderPreview() : null}
-            </View>
-          </NativePeekAndPopView>
+          {Platform.Version >= 13 && (
+            <NativePeekAndPopView
+              // Renders nothing and inside view bound to the screen used by controller
+              style={{ width: 0, height: 0 }}
+              onDisappear={this.onDisappear}
+              onPeek={this.onPeek}
+              onPop={onPop}
+              onPressPreview={onPressPreview}
+              ref={this.preview}
+              previewActions={this.state.traversedActions}
+              onAction={this.onActionsEvent}
+            >
+              <View style={{ width, height }}>
+                {this.state.visible && renderPreview()}
+              </View>
+            </NativePeekAndPopView>
+          )}
           {children}
         </View>
       </React.Fragment>
