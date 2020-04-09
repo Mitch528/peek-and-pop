@@ -17,6 +17,11 @@ import {
   PeekableViewProps,
 } from './types';
 
+const PlatformMajorVersion =
+  typeof Platform.Version === 'string'
+    ? parseInt(Platform.Version, 10)
+    : Math.floor(Platform.Version);
+
 export const NativePeekAndPopView: React.ComponentType<{
   ref: React.RefObject<NativePeekAndPopViewRef>;
   style: StyleProp<ViewStyle>;
@@ -63,7 +68,7 @@ type State = {
 export default class PeekableView extends React.Component<
   PeekableViewProps,
   State
-  > {
+> {
   static getDerivedStateFromProps(props: PeekableViewProps) {
     const mappedActions: MappedAction[] = [];
     const traversedActions = props.previewActions
@@ -131,7 +136,7 @@ export default class PeekableView extends React.Component<
     return (
       <React.Fragment>
         <View {...rest} ref={this.sourceView}>
-          {Platform.Version >= 13 && (
+          {PlatformMajorVersion >= 13 && (
             <NativePeekAndPopView
               // Renders nothing and inside view bound to the screen used by controller
               style={{ width: 0, height: 0 }}

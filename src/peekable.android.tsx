@@ -5,10 +5,6 @@ export default class PeekableView extends React.Component<PeekableViewProps> {
   render() {
     const { children } = this.props;
 
-    return (
-      <React.Fragment>
-        {children}
-      </React.Fragment>
-    );
+    return <React.Fragment>{children}</React.Fragment>;
   }
 }
